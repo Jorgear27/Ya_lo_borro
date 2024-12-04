@@ -1,0 +1,74 @@
+name: QA Workflow
+
+on:
+  push:
+    # Push events
+    branches:
+      - develop
+  workflow_dispatch:
+  pull_request:
+    # Pull request events
+    types: [synchronize, opened, reopened, ready_for_review]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+
+      - name: Set up environment
+        run: |
+          CONFIG_FILE_PATH=$(pwd)/config.json
+          MONITOR_PATH=$(pwd)/Metrics_Monitoring_System/build/metrics
+          MONITOR_EXECUTABLE=./metrics
+          LOG_FILE_PATH=$(pwd)/log.txt
+          echo "CONFIG_FILE_PATH=$CONFIG_FILE_PATH" >> $GITHUB_ENV
+          echo "MONITOR_PATH=$MONITOR_PATH" >> $GITHUB_ENV
+          echo "MONITOR_EXECUTABLE=$MONITOR_EXECUTABLE" >> $GITHUB_ENV
+          echo "LOG_FILE_PATH=$LOG_FILE_PATH" >> $GITHUB_ENV
+
+      - name: Install dependencies
+        uses: awalsh128/cache-apt-pkgs-action@latest
+        with:
+          packages: doxygen gcovr lcov cppcheck graphviz clang-format valgrind bc cmake gcc g++ libmicrohttpd-dev python3
+          version: 1.0
+
+      - name: Run style check
+        uses: ./.github/actions/style
+
+      - name: Run documentation check
+        uses: ./.github/actions/documentation
+
+      - name: Build project
+        uses: ./.github/actions/building
+
+      - name: Run tests and coverage
+        uses: ./.github/actions/coverage_and_test
+
+  generate-docs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install Doxygen
+        uses: awalsh128/cache-apt-pkgs-action@latest
+        with:
+          packages: doxygen gcovr lcov cppcheck graphviz clang-format valgrind bc cmake gcc g++ libmicrohttpd-dev python3
+          version: 1.0
+
+      - name: Generate documentation
+        run: doxygen Doxyfile
+
+      - name: Verify documentation generation
+        run: test -d ./documentation
+
+      - name: Upload documentation as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: Doxygen-Docs
+          path: ./documentation
