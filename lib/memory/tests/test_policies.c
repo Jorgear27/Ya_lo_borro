@@ -1,27 +1,34 @@
+#include "memory.h"
+#include "unity.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include "memory.h"
-#include "unity.h"
 
+/** Number of allocations to be made */
 #define NUM_ALLOCATIONS 5000
+
+/** Maximum size of an allocation */
 #define MAX_ALLOCATION_SIZE 1024
 
-void setUp(void) {
+void setUp(void)
+{
     // Set up code if needed
 }
 
-void tearDown(void) {
+void tearDown(void)
+{
     // Tear down code if needed
 }
 
-double calculate_fragmentation(size_t total_free, size_t total_memory, int num_free_blocks, int total_blocks) {
+double calculate_fragmentation(size_t total_free, size_t total_memory, int num_free_blocks, int total_blocks)
+{
     double block_fragmentation = (double)num_free_blocks / total_blocks * 100;
     double space_fragmentation = (double)total_free / total_memory * 100;
     return block_fragmentation * 0.5 + space_fragmentation * 0.5;
 }
 
-void test_policy(int policy, const char* policy_name) {
+void test_policy(int policy, const char* policy_name)
+{
     malloc_control(policy);
 
     void* allocations[NUM_ALLOCATIONS];
@@ -31,27 +38,34 @@ void test_policy(int policy, const char* policy_name) {
     double cpu_time_used;
 
     start = clock();
-    for (int i = 0; i < NUM_ALLOCATIONS; i++) {
+    for (int i = 0; i < NUM_ALLOCATIONS; i++)
+    {
         size_t size = rand() % MAX_ALLOCATION_SIZE + 1;
         allocations[i] = malloc(size);
-        if (allocations[i]) {
+        if (allocations[i])
+        {
             allocated += size;
         }
     }
 
-    for (int i = 0; i < NUM_ALLOCATIONS / 2; i++) {
+    for (int i = 0; i < NUM_ALLOCATIONS / 2; i++)
+    {
         int index = rand() % NUM_ALLOCATIONS;
-        if (allocations[index]) {
+        if (allocations[index])
+        {
             free(allocations[index]);
             allocations[index] = NULL;
         }
     }
 
-    for (int i = 0; i < NUM_ALLOCATIONS; i++) {
-        if (allocations[i] == NULL) {
+    for (int i = 0; i < NUM_ALLOCATIONS; i++)
+    {
+        if (allocations[i] == NULL)
+        {
             size_t size = rand() % MAX_ALLOCATION_SIZE + 1;
             allocations[i] = malloc(size);
-            if (allocations[i]) {
+            if (allocations[i])
+            {
                 allocated += size;
             }
         }
@@ -64,9 +78,11 @@ void test_policy(int policy, const char* policy_name) {
 
     // Calculate the number of free blocks and total blocks
     t_block b = base;
-    while (b) {
+    while (b)
+    {
         total_blocks++;
-        if (b->free) {
+        if (b->free)
+        {
             num_free_blocks++;
             total_free += b->size;
         }
@@ -76,16 +92,20 @@ void test_policy(int policy, const char* policy_name) {
 
     double fragmentation = calculate_fragmentation(total_free, total_memory, num_free_blocks, total_blocks);
 
-    printf("%s - TIME: %f seconds, ALLOCATED: %zu bytes, FREE: %zu bytes, FRAGMENTATION: %f\n\n", policy_name, cpu_time_used, allocated, total_free, fragmentation);
+    printf("%s - TIME: %f seconds, ALLOCATED: %zu bytes, FREE: %zu bytes, FRAGMENTATION: %f\n\n", policy_name,
+           cpu_time_used, allocated, total_free, fragmentation);
 
-    for (int i = 0; i < NUM_ALLOCATIONS; i++) {
-        if (allocations[i]) {
+    for (int i = 0; i < NUM_ALLOCATIONS; i++)
+    {
+        if (allocations[i])
+        {
             free(allocations[i]);
         }
     }
 }
 
-void test_policies() {
+void test_policies()
+{
     printf("Testing First Fit...\n");
     test_policy(FIRST_FIT, "First Fit");
 
@@ -96,7 +116,8 @@ void test_policies() {
     test_policy(WORST_FIT, "Worst Fit");
 }
 
-int main() {
+int main()
+{
     UNITY_BEGIN();
     RUN_TEST(test_policies);
     printf("\nMemory Policies Test Completed:\n");

@@ -1,0 +1,14 @@
+{
+	"FIRST_FIT":	{
+		"time":	0.000724,
+		"fragmentation":	14.280971890785725
+	},
+	"BEST_FIT":	{
+		"time":	0.001192,
+		"fragmentation":	53.838588060764778
+	},
+	"WORST_FIT":	{
+		"time":	0.000979,
+		"fragmentation":	17.605676563860051
+	}
+}

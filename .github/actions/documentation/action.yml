@@ -13,7 +13,7 @@ runs:
         # Append to DOX_CONF_FILE input source directories, if you have libs, add $(pwd)/lib
         {
             cat $DOX_CONF_FILE
-            echo "INPUT" = $(pwd)/src $(pwd)/include $(pwd)/lib/memory/src $(pwd)/lib/memory/include
+            echo "INPUT" = $(pwd)/lib/memory/include $(pwd)/lib/memory/src
         } > $DOX_CONF_FILE
 
         # Generate documentation

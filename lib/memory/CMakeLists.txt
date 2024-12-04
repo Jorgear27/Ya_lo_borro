@@ -2,7 +2,7 @@
 cmake_minimum_required(VERSION 3.25 FATAL_ERROR)
 
 # Set the project name
-project(my_memory VERSION 1.0 DESCRIPTION "My own memoey library" LANGUAGES C)
+project(my_memory VERSION 1.0 DESCRIPTION "My own memory library" LANGUAGES C)
 
 # Add the library
 add_library(${PROJECT_NAME} SHARED ${CMAKE_CURRENT_SOURCE_DIR}/src/memory.c)

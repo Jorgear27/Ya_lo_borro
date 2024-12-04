@@ -208,7 +208,7 @@ void* malloc(size_t size)
         base = b;
     }
 
-    //log_operation("malloc", size, b->data);
+    // log_operation("malloc", size, b->data);
     return b->data;
 }
 
@@ -235,16 +235,18 @@ void free(void* p)
                 base = NULL;
             brk(b);
         }
-        //log_operation("free", 0, p);
+        // log_operation("free", 0, p);
     }
 }
 
-void* calloc(size_t number, size_t size) {
+void* calloc(size_t number, size_t size)
+{
     size_t total_size = number * size;
     void* ptr = malloc(total_size);
-    if (ptr) {
+    if (ptr)
+    {
         memset(ptr, 0, total_size);
-        //log_operation("calloc", total_size, ptr);
+        // log_operation("calloc", total_size, ptr);
     }
     return ptr;
 }
@@ -287,11 +289,11 @@ void* realloc(void* p, size_t size)
                 copy_block(b, new);
                 // Liberamos el bloque anterior
                 free(p);
-                //log_operation("realloc", size, newp);
+                // log_operation("realloc", size, newp);
                 return (newp);
             }
         }
-        //log_operation("realloc", size, p);
+        // log_operation("realloc", size, p);
         return (p);
     }
     return NULL;
@@ -389,24 +391,27 @@ void memory_usage(size_t* allocated, size_t* free)
     }
 }
 
-void log_operation(const char *operation, size_t size, void *ptr) {
+void log_operation(const char* operation, size_t size, void* ptr)
+{
     static int logging = 0;
 
-    if (logging) {
+    if (logging)
+    {
         return;
     }
 
     logging = 1;
 
-    FILE *log_file = fopen(LOG_FILE, "a");
-    if (log_file == NULL) {
+    FILE* log_file = fopen(LOG_FILE, "a");
+    if (log_file == NULL)
+    {
         perror("Error opening log file");
         logging = 0;
         return;
     }
 
     time_t now = time(NULL);
-    char *timestamp = ctime(&now);
+    char* timestamp = ctime(&now);
     timestamp[strlen(timestamp) - 1] = '\0'; // Remove newline character
 
     fprintf(log_file, "[%s] Operation: %s, Size: %zu, Pointer: %p\n", timestamp, operation, size, ptr);
@@ -427,72 +432,5 @@ void clear_all_blocks()
         b = next;
     }
 
-    base = NULL;         // Reinicia la base
-}
-
-double fragmentation_and_time(int policy) {
-    malloc_control(policy);
-
-    void* allocations[NUM_ALLOCATIONS];
-    size_t allocated = 0, total_free = 0, total_memory = 0;
-    int num_free_blocks = 0, total_blocks = 0;
-    clock_t start, end;
-    double cpu_time_used;
-
-    start = clock();
-    for (int i = 0; i < NUM_ALLOCATIONS; i++) {
-        size_t size = rand() % MAX_ALLOCATION_SIZE + 1;
-        allocations[i] = malloc(size);
-        if (allocations[i]) {
-            allocated += size;
-        }
-    }
-
-    for (int i = 0; i < NUM_ALLOCATIONS / 2; i++) {
-        int index = rand() % NUM_ALLOCATIONS;
-        if (allocations[index]) {
-            free(allocations[index]);
-            allocations[index] = NULL;
-        }
-    }
-
-    for (int i = 0; i < NUM_ALLOCATIONS; i++) {
-        if (allocations[i] == NULL) {
-            size_t size = rand() % MAX_ALLOCATION_SIZE + 1;
-            allocations[i] = malloc(size);
-            if (allocations[i]) {
-                allocated += size;
-            }
-        }
-    }
-
-    end = clock();
-    cpu_time_used = ((double)(end - start)) / CLOCKS_PER_SEC;
-
-    memory_usage(&allocated, &total_free);
-
-    // Calculate the number of free blocks and total blocks
-    t_block b = base;
-    while (b) {
-        total_blocks++;
-        if (b->free) {
-            num_free_blocks++;
-            total_free += b->size;
-        }
-        total_memory += b->size;
-        b = b->next;
-    }
-
-    double fragmentation = 0;
-    double block_fragmentation = (double)num_free_blocks / total_blocks * 100;
-    double space_fragmentation = (double)total_free / total_memory * 100;
-    fragmentation = block_fragmentation * 0.5 + space_fragmentation * 0.5;
-
-    for (int i = 0; i < NUM_ALLOCATIONS; i++) {
-        if (allocations[i]) {
-            free(allocations[i]);
-        }
-    }
-
-    return fragmentation;
+    base = NULL; // Reinicia la base
 }

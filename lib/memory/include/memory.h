@@ -40,9 +40,6 @@
 /** Nombre del archivo de registro de operaciones. */
 #define LOG_FILE getenv("LOG_FILE_PATH")
 
-#define NUM_ALLOCATIONS 500
-#define MAX_ALLOCATION_SIZE 1024
-
 /** Puntero al primer bloque de memoria. */
 extern void* base;
 
@@ -209,24 +206,15 @@ void memory_usage(size_t* allocated, size_t* free);
 
 /**
  * @brief Registra una operación de asignación o liberación de memoria.
- * 
+ *
  * @param operation Tipo de operación.
  * @param size Tamaño de la memoria asignada o liberada.
  * @param ptr Dirección de memoria asignada o liberada.
  */
-void log_operation(const char *operation, size_t size, void *ptr);
-
-/**
- * @brief Registra una operación de asignación o liberación de memoria.
- *
- * @param filename Nombre del archivo de texto donde se guardará el log.
- */
-void save_operations_to_txt(const char* filename);
+void log_operation(const char* operation, size_t size, void* ptr);
 
 /**
  * @brief Borra todos los bloques de memoria asignados.
  *
  */
 void clear_all_blocks(void);
-
-double fragmentation_and_time(int policy);
