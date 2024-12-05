@@ -1,7 +1,7 @@
 /**
  * @file policies_stats.h
  * @author Jorge Arbach
- * @brief 
+ * @brief
  * @version 0.1
  * @date 2024-12-04
  *
@@ -9,41 +9,42 @@
  *
  */
 
+#include "memory.h"
+#include <cjson/cJSON.h>
+#include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
-#include <unistd.h>
-#include <fcntl.h>
+#include <string.h>
 #include <sys/stat.h>
 #include <sys/types.h>
-#include "memory.h"
-#include <string.h>
-#include <cjson/cJSON.h>
+#include <time.h>
+#include <unistd.h>
 
 /**
  * @brief Number of allocations to be made
- * 
- */ 
+ *
+ */
 #define NUM_ALLOCATIONS 500
 
 /**
  * @brief Maximum size of an allocation
- * 
+ *
  */
 #define MAX_ALLOCATION_SIZE 1024
 
 /**
  * @brief File path to store the policy statistics
- * 
+ *
  */
 #define JSON_PATH getenv("JSON_PATH")
 
 /**
  * @brief Structure to store the statistics of a policy
- * 
+ *
  */
-typedef struct {
-    double time; /**< Time taken to allocate and free memory */
+typedef struct
+{
+    double time;          /**< Time taken to allocate and free memory */
     double fragmentation; /**< Fragmentation percentage */
 } PolicyStats;
 
