@@ -21,4 +21,4 @@ add_executable(${PROJECT_NAME} src/policies_stats.c)
 target_link_libraries(policies_stats PRIVATE cjson::cjson my_memory)
 
 # Set the output directory
-set_target_properties(policies_stats PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+set_target_properties(policies_stats PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib/memory/app)

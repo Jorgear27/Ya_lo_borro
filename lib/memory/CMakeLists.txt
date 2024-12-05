@@ -18,8 +18,8 @@ enable_testing()
 add_subdirectory(tests)
 
 # Add the tests
-add_test(NAME "MemoryLibrary_tests" COMMAND test_memory WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/lib/memory)
-add_test(NAME "Policies_tests" COMMAND test_policies WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/lib/memory)
+add_test(NAME "MemoryLibrary_tests" COMMAND test_memory WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
+add_test(NAME "Policies_tests" COMMAND test_policies WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
 
 # Add the subdirectory for the app
 add_subdirectory(app)
