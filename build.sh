@@ -4,7 +4,7 @@ cd My_Shell
 cd ..
 
 echo "Build project"
-./set_env.sh
+source ./set_env.sh
 python3 -m venv venv
 source venv/bin/activate
 pip install conan
@@ -13,3 +13,4 @@ conan install . --build=missing --settings=build_type=Debug
 cd build
 cmake .. -DCMAKE_TOOLCHAIN_FILE=./build/Debug/generators/conan_toolchain.cmake -DCMAKE_BUILD_TYPE=Debug
 make -j$(nproc)
+cd ..
